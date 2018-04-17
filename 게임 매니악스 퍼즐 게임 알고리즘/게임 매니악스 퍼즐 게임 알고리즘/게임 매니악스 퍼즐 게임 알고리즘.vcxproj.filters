@@ -21,6 +21,9 @@
     <ClCompile Include="Stage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mover.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main.h">

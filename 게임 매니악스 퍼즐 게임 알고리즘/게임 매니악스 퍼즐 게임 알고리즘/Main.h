@@ -7,6 +7,8 @@
 #include "..\LibUtil\LibUtil.h"
 #include "Stage.h"
 
+
+// Texture
 enum {
 	TEX_VOID, TEX_COIN, TEX_ENEMY0, TEX_ENEMY1, TEX_FISH,
 	TEX_FLOOR, TEX_ICE_FLOOR, TEX_ITEM, TEX_LIFT,
@@ -43,57 +45,61 @@ enum {
 	TEX_COUNT
 };
 
+// Mesh
 enum {
 	MESH_CUBE_WHITE, MESH_CUBE_GRAY,
 	MESH_BALL_GRAY, MESH_BALL_BLACK,
 	MESH_COUNT
 };
 
-//============================================================
-//	게임 본체 클래스
+//==============================================================
+// 게임 본체의 클래스
 class CPuzzleGame : public CGame {
 protected:
 	bool Paused, PrevInput;
 public:
 
+	// 생성자, 소멸자
 	CPuzzleGame();
 	~CPuzzleGame();
-	//	디바이스 초기화, 이동, 그리기
+
+	// 디바이스의 초기화, 이동, 그리기
 	virtual void OnResetDevice();
 	virtual void Move();
 	virtual void Draw();
 
-	//	폰트
-	CFont *Font;
-	
-	//	Texture
+	// 폰트
+	CFont* Font;
+
+	// Texture
 	vector<CTexture*> Texture;
 
-	//	Model
+	// Model
 	vector<CMesh*> Mesh;
 
-	//	Task 리스트
+	// Task 리스트
 	CTaskList *MoverList;
-	void MoveTask(CTaskList *list);
-	void DrawTask(CTaskList *list);
+	void MoveTask(CTaskList* list);
+	void DrawTask(CTaskList* list);
 
-	//	스테이지
+	// 스테이지
 	vector<CStage*> Stage;
 	int StageIndex;
 	bool StageActive;
 	void SetStage(int stage);
 
-	//	난수
+	// 난수
 	CRand Rand;
 };
 
-//=====================================================================
-//	글로벌 변수, 정수
 
-//	게임 본체
-extern CPuzzleGame *Game;
+//==============================================================
+// 글로벌 변수, 정수
 
-//	Color
+// 게임 본체
+extern CPuzzleGame* Game;
+
+// Color
 #define COL_WHITE D3DCOLOR_ARGB(255, 255, 255, 255)
 #define COL_LGRAY D3DCOLOR_ARGB(255, 192, 192, 192)
 #define COL_MGRAY D3DCOLOR_ARGB(255, 128, 128, 128)
@@ -101,7 +107,7 @@ extern CPuzzleGame *Game;
 #define COL_BLACK D3DCOLOR_ARGB(255, 0, 0, 0)
 #define COL_SHADE D3DCOLOR_ARGB(128, 0, 0, 0)
 
-//	좌표
+// 좌표
 #define MAX_X 16
 #define MAX_Y 12
 

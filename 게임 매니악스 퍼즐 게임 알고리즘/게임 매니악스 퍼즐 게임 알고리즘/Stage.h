@@ -4,7 +4,7 @@
 #include "..\LibGame\Task.h"
 #include "Mover.h"
 
-//스테이지 기본 클래스
+// 스테이지의 기본 클래스
 class CStage {
 public:
 	const wchar_t* Name;
@@ -15,7 +15,8 @@ public:
 	virtual void Draw() {}
 };
 
-//모든 스테이지의 작성
+// 모든 스테이지의 작성
 extern void MakeStage();
 
 #endif
+

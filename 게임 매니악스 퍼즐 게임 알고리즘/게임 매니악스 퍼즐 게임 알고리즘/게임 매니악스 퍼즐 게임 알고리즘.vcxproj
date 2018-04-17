@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>D:\DirectX\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\DirectX\Lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\DirectX\Lib\x86;C:\Users\User\source\repos\StudyWithBook\게임 매니악스 퍼즐 게임 알고리즘\게임 매니악스 퍼즐 게임 알고리즘\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -88,14 +88,16 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>
+      </SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;dinput8.lib;dxguid.lib;wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;dinput8.lib;dxguid.lib;wininet.lib;LibGame.lib;LibUtil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -147,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Mover.cpp" />
     <ClCompile Include="Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +157,14 @@
     <ClInclude Include="Mover.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Stage1.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LibGame\LibGame.vcxproj">
+      <Project>{f1a079a4-f6ee-4d98-97e2-bd84be7434fa}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LibUtil\LibUtil.vcxproj">
+      <Project>{2d0fc383-a58e-422a-9023-caa6f38c1aa9}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,30 +1,40 @@
 #include "Main.h"
 
+//셀을 관리하는 클래스
 class CCell {
-	char * Cell;	//2차원 같은 1차원배열 ㅋㅋ
+	//셀의 종류를 나타내는 배열
+	char * Cell;
+	//X 방향(가로 방향)의 셀의 수, Y방향(세로 방향)의 셀의 수
 	int XSize, YSize;
 public:
-	//생성자
+	//생성자(셀의 개수를 지정한다)
+	//셀의 배열을 생성한다.
 	CCell(int xsize, int ysize)
 		: XSize(xsize), YSize(ysize)
 	{
 		Cell = new char[XSize*YSize];
 	}
+	//생성자(셀의 개수를 기본값으로 사용)
+	//셀의 배열을 생성한다.
 	CCell()
 		: XSize(MAX_X), YSize(MAX_Y)
 	{
 		Cell = new char[XSize*YSize];
 	}
+	//소멸자
+	//셀의 배열을 삭제한다.
 	~CCell() {
 		delete[] Cell;
 	}
 
-	//초기화
+	//셀의 초기화
+	//매개변수에 지정된 내용으로 셀의 배열을 초기화한다.
 	void Init(char* cell) {
 		for (int i = 0, n = XSize * YSize; i < n; i++)Cell[i] = cell[i];
 	}
 
-	//x, y 좌표에 있는 값 받기
+	//셀의 정보 얻기
+	//지정된 좌표에 있는 셀의 종류를 얻는다.
 	char Get(int x, int y) {
 		if (0 <= x && x < XSize && 0 <= y && y < YSize) {
 			return Cell[x + y * XSize];
@@ -44,14 +54,16 @@ public:
 		return YSize;
 	}
 
-	//값 설정
+	//셀의 설정
+	//지정된 좌표에 있는 셀의 종류를 설정한다.
 	void Set(int x, int y, char value) {
 		if (0 <= x && x < XSize && 0 <= y && y < YSize) {
 			Cell[x + y * XSize] = value;
 		}
 	}
 
-	//두 값을 교환
+	//셀 바꿔 넣기
+	//지정된 2개의 좌표에 있는 셀을 바꿔 넣는다.
 	void Swap(int xa, int ya, int xb, int yb) {
 		char c = Get(xa, ya);
 		char d = Get(xb, yb);
@@ -170,11 +182,11 @@ CRand Rand;
 
 #include "Stage.h"
 #include "Stage1.h"
-#include "Stage2.h"
-#include "Stage3.h"
-#include "Stage4.h"
-#include "Stage5.h"
-#include "Stage6.h"
+//#include "Stage2.h"
+//#include "Stage3.h"
+//#include "Stage4.h"
+//#include "Stage5.h"
+//#include "Stage6.h"
 
 //============================================
 //모든 스테이지의 작성
@@ -185,52 +197,52 @@ void MakeStage() {
 	Game->Stage.push_back(new CMazeWalkerStage());
 	Game->Stage.push_back(new CLoadPusherStage());
 	Game->Stage.push_back(new CSlidingLoadPusherStage());
-	Game->Stage.push_back(new CLoadPusherInGravityStage());
-	Game->Stage.push_back(new CSelfDirectiveCharacterStage());
-	Game->Stage.push_back(new CFollowingCursorStage());
+	//Game->Stage.push_back(new CLoadPusherInGravityStage());
+	//Game->Stage.push_back(new CSelfDirectiveCharacterStage());
+	//Game->Stage.push_back(new CFollowingCursorStage());
 
-	// Stage2 떨어뜨리기
-	Game->Stage.push_back(new CDroppingBlockStage());
-	Game->Stage.push_back(new CDroppingJewelStage());
-	Game->Stage.push_back(new CDroppingBallStage());
-	Game->Stage.push_back(new CDroppingBall2Stage());
-	Game->Stage.push_back(new CDroppingBlock3DStage());
+	//// Stage2 떨어뜨리기
+	//Game->Stage.push_back(new CDroppingBlockStage());
+	//Game->Stage.push_back(new CDroppingJewelStage());
+	//Game->Stage.push_back(new CDroppingBallStage());
+	//Game->Stage.push_back(new CDroppingBall2Stage());
+	//Game->Stage.push_back(new CDroppingBlock3DStage());
 
-	// Stage3 연결하기
-	Game->Stage.push_back(new CConnectedRailStage());
-	Game->Stage.push_back(new CConnectedPipeStage());
-	Game->Stage.push_back(new CLinkedShapeStage());
-	Game->Stage.push_back(new CEnclosedAreaStage());
-	Game->Stage.push_back(new CTraversableRouteStage());
-	Game->Stage.push_back(new CCrosswordStage());
+	//// Stage3 연결하기
+	//Game->Stage.push_back(new CConnectedRailStage());
+	//Game->Stage.push_back(new CConnectedPipeStage());
+	//Game->Stage.push_back(new CLinkedShapeStage());
+	//Game->Stage.push_back(new CEnclosedAreaStage());
+	//Game->Stage.push_back(new CTraversableRouteStage());
+	//Game->Stage.push_back(new CCrosswordStage());
 
-	// Stage4 블록
-	Game->Stage.push_back(new CRectangleShapedBlockStage());
-	Game->Stage.push_back(new CTransformedBlockStage());
-	Game->Stage.push_back(new CStruckBlockStage());
-	Game->Stage.push_back(new CRotatedStageStage());
-	Game->Stage.push_back(new CFoodBlockStage());
-	Game->Stage.push_back(new CSurroundingBlockStage());
-	Game->Stage.push_back(new CConnectedBlockStage());
-	Game->Stage.push_back(new CDrawnAndShotBlockStage());
-	Game->Stage.push_back(new CPushedAndCollectedBlockStage());
-	Game->Stage.push_back(new CCaughtAndPiledBlockStage());
-	Game->Stage.push_back(new CMarkedAndSunkBlockStage());
+	//// Stage4 블록
+	//Game->Stage.push_back(new CRectangleShapedBlockStage());
+	//Game->Stage.push_back(new CTransformedBlockStage());
+	//Game->Stage.push_back(new CStruckBlockStage());
+	//Game->Stage.push_back(new CRotatedStageStage());
+	//Game->Stage.push_back(new CFoodBlockStage());
+	//Game->Stage.push_back(new CSurroundingBlockStage());
+	//Game->Stage.push_back(new CConnectedBlockStage());
+	//Game->Stage.push_back(new CDrawnAndShotBlockStage());
+	//Game->Stage.push_back(new CPushedAndCollectedBlockStage());
+	//Game->Stage.push_back(new CCaughtAndPiledBlockStage());
+	//Game->Stage.push_back(new CMarkedAndSunkBlockStage());
 
-	// Stage5 볼
-	Game->Stage.push_back(new CBallOnRailStage());
-	Game->Stage.push_back(new CHangingBallStage());
-	Game->Stage.push_back(new CCollectedBallStage());
-	Game->Stage.push_back(new CSwappedBallStage());
-	Game->Stage.push_back(new CSnakeBallStage());
-	Game->Stage.push_back(new CFlippedBallStage());
-	Game->Stage.push_back(new CRollingBallStage());
+	//// Stage5 볼
+	//Game->Stage.push_back(new CBallOnRailStage());
+	//Game->Stage.push_back(new CHangingBallStage());
+	//Game->Stage.push_back(new CCollectedBallStage());
+	//Game->Stage.push_back(new CSwappedBallStage());
+	//Game->Stage.push_back(new CSnakeBallStage());
+	//Game->Stage.push_back(new CFlippedBallStage());
+	//Game->Stage.push_back(new CRollingBallStage());
 
-	// Stage6 기타
-	Game->Stage.push_back(new CMemorizingItemPositionStage());
-	Game->Stage.push_back(new CTreasureMapStage());
-	Game->Stage.push_back(new CDeliveringLoadStage());
-	Game->Stage.push_back(new CMakingFloorStage());
-	Game->Stage.push_back(new CDiceStage());
-	Game->Stage.push_back(new CBuildingStage());
+	//// Stage6 기타
+	//Game->Stage.push_back(new CMemorizingItemPositionStage());
+	//Game->Stage.push_back(new CTreasureMapStage());
+	//Game->Stage.push_back(new CDeliveringLoadStage());
+	//Game->Stage.push_back(new CMakingFloorStage());
+	//Game->Stage.push_back(new CDiceStage());
+	//Game->Stage.push_back(new CBuildingStage());
 }
