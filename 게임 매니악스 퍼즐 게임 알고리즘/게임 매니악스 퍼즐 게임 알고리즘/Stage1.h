@@ -532,3 +532,553 @@ public:
 	}
 	
 };
+
+//==============================================================
+// 중력에 의해 떨어지는 물체 밀기
+
+// 물체
+class CLoadPusherInGravityLoad : public CMover {
+public:
+	CCell * Cell;
+	int CX, CY, VX, VY;
+	int State, Time;
+
+	CLoadPusherInGravityLoad(CCell* cell, int x, int y)
+		: Cell(cell), CX(x), CY(y), VX(0), VY(0), State(0), Time(0)
+	{
+		Texture = Game->Texture[TEX_OBJECT];
+		X = x;
+		Y = y;
+	}
+	//물체를 밀 때 호출하는 처리
+	void Push(int vx, int vy) {
+		if (State == 0) {
+			VX = vx;
+			VY = 0;
+			CX += vx;
+			CY += vy;
+			State = 1;
+			Time = 10;
+		}
+	}
+
+	//물체의 이동 처리
+	virtual bool Move(const CInputState* is) {
+		if (State == 0) {
+			//아래쪽 방향의 셀이 공백이면 이동상태로 전환한다.
+			if (Cell->Get(CX, CY + 1) == ' ') {
+				//이동 방향을 설정한다(아래로)
+				VX = 0;
+				VY = 1;
+				Cell->Set(CX, CY, ' ');
+				Cell->Set(CX, CY + VY, 'L');
+				CX += VX;
+				CY += VY;
+				State = 1;
+				Time = 10;
+			}
+		}
+		if (State == 1) {
+			Time--;
+			X = CX - VX * Time*0.1f;
+			Y = CY - VY * Time*0.1f;
+			if (Time == 0) {
+				State = 0;
+			}
+		}
+		return true;
+	}
+};
+
+// 사람
+class CLoadPusherInGravityMan : public CMover {
+public:
+	CCell * Cell;
+	int CX, CY, VX, VY;
+	int State, Time;
+
+	CLoadPusherInGravityMan(CCell* cell, int x, int y)
+		: Cell(cell), CX(x), CY(y), VX(0), VY(0), State(0), Time(0)
+	{
+		Texture = Game->Texture[TEX_MAN];
+		X = x;
+		Y = y;
+	}
+	//캐릭터의 이동처리
+	virtual bool Move(const CInputState* is) {
+		if (State == 0) {
+			//레버 입력에 따라 이동 방향을 설정한다.
+			VX = VY = 0;
+			if (is->Left) VX = -1; else
+				if (is->Right) VX = 1; else
+					if (is->Up) VY = -1; else
+						if (is->Down) VY = 1;
+			//이동 하는 경우 처리
+			if (VX != 0 || VY != 0) {
+				//이동 방향의 셀이 공백이면 이동한다.
+				if (Cell->Get(CX + VX, CY + VY) == ' ') {
+					Cell->Set(CX, CY, ' ');
+					Cell->Set(CX + VX, CY + VY, 'M');
+					CX += VX;
+					CY += VY;
+					State = 1;
+					Time = 10;
+				}
+				else
+					//이동 방향의 셀이 물체이고
+					//그 물체의 이동 방향이 공백이면
+					//물체를 민다.
+					if (
+						Cell->Get(CX + VX, CY) == 'L' &&
+						Cell->Get(CX + VX * 2, CY) == ' ' &&
+						Cell->Get(CX + VX, CY + 1) != ' '
+						) {
+						Cell->Set(CX, CY, ' ');
+						Cell->Set(CX + VX, CY, 'M');
+						Cell->Set(CX + VX * 2, CY, 'L');
+						CX += VX;
+						CY += VY;
+						State = 1;
+						Time = 10;
+						for (CTaskIter i(Game->MoverList); i.HasNext(); ) {
+							CMover* mover = (CMover*)i.Next();
+							if ((int)mover->X == CX && (int)mover->Y == CY) {
+								((CLoadPusherInGravityLoad*)mover)->Push(VX, VY);
+							}
+						}
+					}
+			}
+		}
+		if (State == 1) {
+			Time--;
+			X = CX - VX * Time*0.1f;
+			Y = CY - VY * Time*0.1f;
+			if (Time == 0) {
+				State = 0;
+			}
+		}
+		return true;
+	}
+};
+
+// 스테이지
+class CLoadPusherInGravityStage : public CStage {
+	CCell* Cell;
+public:
+	CLoadPusherInGravityStage() : CStage(L"LOAD PUSHER IN GRAVITY") {
+		Cell = new CCell();
+	}
+	virtual ~CLoadPusherInGravityStage() {
+		delete Cell;
+	}
+	virtual void Init() {
+		Cell->Init((char*)
+			"                "
+			"################"
+			"#              #"
+			"#    L    L    #"
+			"#  ###    ###  #"
+			"#  #        #  #"
+			"#      M       #"
+			"#  #  L  L  #  #"
+			"#  ####  ####  #"
+			"#              #"
+			"#     L  L     #"
+			"################"
+		);
+		for (int y = 0; y<MAX_Y; y++) {
+			for (int x = 0; x<MAX_X; x++) {
+				switch (Cell->Get(x, y)) {
+				case 'M': new CLoadPusherInGravityMan(Cell, x, y); break;
+				case 'L': new CLoadPusherInGravityLoad(Cell, x, y); break;
+				}
+			}
+		}
+	}
+	virtual void Draw() {
+		float
+			sw = Game->GetGraphics()->GetWidth() / MAX_X,
+			sh = Game->GetGraphics()->GetHeight() / MAX_Y;
+		for (int y = 0; y<MAX_Y; y++) {
+			for (int x = 0; x<MAX_X; x++) {
+				if (Cell->Get(x, y) == '#') {
+					Game->Texture[TEX_FLOOR]->Draw(
+						x*sw, y*sh, sw, sh, 0, 0, 1, 1, COL_BLACK
+					);
+				}
+
+			}
+		}
+	}
+};
+
+//==============================================================
+// 자율적으로 움직이는 캐릭터
+
+// 사람
+class CSelfDirectiveCharacterMan : public CMover {
+public:
+	CCell * Cell;
+	int CX, CY, VX, VY;
+	int State, Time;
+	bool Digger;
+
+	CSelfDirectiveCharacterMan(CCell* cell, int x, int y)
+		: Cell(cell), CX(x), CY(y), VX(1), VY(1), State(0), Time(0), Digger(false)
+	{
+		Texture = Game->Texture[TEX_MAN];
+		X = x;
+		Y = y;
+	}
+	//캐릭터에게 명령을 내릴때 호출되는 처리
+	void Dig() {
+		//굴착 캐릭터 플래그를 설정한다.
+		Digger = true;
+		//그래픽을 굴착 캐릭터로 변경한다.
+		Texture = Game->Texture[TEX_DRILLER];
+	}
+
+	//캐릭터의 이동 처리
+	virtual bool Move(const CInputState* is) {
+		if (State == 0) {
+			//아래쪽 셀이 공백인 경우에는 낙하 상태로 전환한다.
+			if (Cell->Get(CX, CY + 1) == ' ') {
+				CY += VY;
+				Time = 20;
+				State = 1;
+			}
+			else
+				//굴착 캐릭터 플래그가 설정되어 있고,
+				//아래쪽 방향의 셀이 벽인 겨우에는 굴착상태로 전환한다.
+				if (Digger && Cell->Get(CX, CY + 1) == '#') {
+					CY += VY;
+					Time = 40;
+					State = 2;
+				}
+				else
+					//좌우 방향의 셀이 공백인 경우에는 보행상태로 전환한다.
+					if (Cell->Get(CX + VX, CY) == ' ') {
+						CX += VX;
+						Time = 20;
+						State = 3;
+					}
+					else {
+						//좌우 방향이 공백이 아닐 때에는
+						//이동 방향을 반대로 설정한다.
+						VX = -VX;
+					}
+		}
+		//낙하 상태의 처리
+		if (State == 1) {
+			Time--;
+			Y = CY - VY * Time*0.05f;
+			if (Time == 0) {
+				State = 0;
+			}
+		}
+		//굴착 상태의 처리
+		if (State == 2) {
+			Time--;
+			Y = CY - VY * Time*0.025f;
+			//타이머가 0이 되면
+			//파인 바닥의 셀을 공백으로 변경하고
+			//정지상태로 전환한다.
+			if (Time == 0) {
+				Cell->Set(CX, CY, ' ');
+				State = 0;
+			}
+		}
+		//보행처리
+		if (State == 3) {
+			Time--;
+			X = CX - VX * Time*0.05f;
+			if (Time == 0) {
+				State = 0;
+			}
+		}
+		return true;
+	}
+
+	virtual void Draw() {
+		if (State == 2) {
+			float
+				sw = Game->GetGraphics()->GetWidth() / MAX_X,
+				sh = Game->GetGraphics()->GetHeight() / MAX_Y;
+			Game->Texture[TEX_FILL]->Draw(
+				X*sw, CY*sh, sw, sh*(1 - CY + Y), 0, 0, 1, 1, COL_WHITE
+			);
+		}
+		CMover::Draw();
+	}
+};
+
+// 커서
+class CSelfDirectiveCharacterCursor : public CMover {
+public:
+	CSelfDirectiveCharacterCursor(float x, float y)
+	{
+		Texture = Game->Texture[TEX_SHURIKEN];
+		X = x;
+		Y = y;
+	}
+	
+	//커서의 이동 처리
+	virtual bool Move(const CInputState* is) {
+		//커서의 속도와 접촉판정의 크기를 설정한다.
+		float speed = 0.1f, hit = 0.5f;
+		//레버의 입력에 따라 커서의 좌표를 갱신한다.
+		if (is->Left && X>0) X -= speed;
+		if (is->Right && X<MAX_X - 1) X += speed;
+		if (is->Up && Y>0) Y -= speed;
+		if (is->Down && Y<MAX_Y - 1) Y += speed;
+
+		//모든 캐릭터에 대해
+		//커서와의 접촉판정 처리를 수행한다.
+		CSelfDirectiveCharacterMan* man = NULL;
+		for (CTaskIter i(Game->MoverList); i.HasNext(); ) {
+			CMover* mover = (CMover*)i.Next();
+			//커서와 접촉해있는 캐릭터를 발견하면
+			//루프를 탈출한다.
+			if (
+				mover != this &&
+				mover->X<X + hit && X<mover->X + hit &&
+				mover->Y<Y + hit && Y<mover->Y + hit
+				) {
+				man = (CSelfDirectiveCharacterMan*)mover;
+				break;
+			}
+		}
+		//커서와 접촉해있는 캐릭터가 있는 경우의 처리
+		if (man) {
+			//커서를 원형으로 표시한다.
+			Texture = Game->Texture[TEX_PILE];
+			//버튼 입력이 있으면
+			//커서와 접촉해있는 캐릭터에게 명령을 내린다.
+			if (is->Button[0]) {
+				man->Dig();
+			}
+		}
+		else {
+			//커서와 접촉해 있는 캐릭터가 없는경우
+			//커서를 십자 형태로 표시한다.
+			Texture = Game->Texture[TEX_SHURIKEN];
+		}
+		return true;
+	}
+};
+
+// 스테이지
+class CSelfDirectiveCharacterStage : public CStage {
+	CCell* Cell;
+public:
+	CSelfDirectiveCharacterStage() : CStage(L"SELF DIRECTIVE CHARACTER") {
+		Cell = new CCell();
+	}
+	virtual ~CSelfDirectiveCharacterStage() {
+		delete Cell;
+	}
+	virtual void Init() {
+		Cell->Init((char*)
+			"                "
+			"################"
+			"#  M        M  #"
+			"#  #  M  M  #  #"
+			"#  ##########  #"
+			"#  #        #  #"
+			"# M   M  M   M #"
+			"# # M #  # M # #"
+			"# #####  ##### #"
+			"#              #"
+			"#     M  M     #"
+			"================"
+		);
+		for (int y = 0; y<MAX_Y; y++) {
+			for (int x = 0; x<MAX_X; x++) {
+				switch (Cell->Get(x, y)) {
+				case 'M':
+					new CSelfDirectiveCharacterMan(Cell, x, y);
+					Cell->Set(x, y, ' ');
+					break;
+				}
+			}
+		}
+		new CSelfDirectiveCharacterCursor((MAX_X - 1)*0.5f, (MAX_Y - 1)*0.5f);
+	}
+	virtual void Draw() {
+		float
+			sw = Game->GetGraphics()->GetWidth() / MAX_X,
+			sh = Game->GetGraphics()->GetHeight() / MAX_Y;
+		for (int y = 0; y<MAX_Y; y++) {
+			for (int x = 0; x<MAX_X; x++) {
+				if (Cell->Get(x, y) == '#') {
+					Game->Texture[TEX_FLOOR]->Draw(
+						x*sw, y*sh, sw, sh, 0, 0, 1, 1, COL_BLACK
+					);
+				}
+				else
+					if (Cell->Get(x, y) == '=') {
+						Game->Texture[TEX_DROP_FLOOR]->Draw(
+							x*sw, y*sh, sw, sh, 0, 0, 1, 1, COL_BLACK
+						);
+					}
+			}
+		}
+	}
+};
+
+//==============================================================
+// 뒤따라오는 커서
+
+// 선두 커서
+#define FOLLOWING_CURSOR_LENGTH 101
+//커서가 이전에 통과한 좌표를 저장하기 위한 배열
+float
+FollowingCursorX[FOLLOWING_CURSOR_LENGTH],
+FollowingCursorY[FOLLOWING_CURSOR_LENGTH];
+
+class CFollowingCursorHeadCursor : public CMover {
+public:
+	CCell * Cell;
+	bool PrevButton;
+
+	CFollowingCursorHeadCursor(CCell* cell, float x, float y)
+		: Cell(cell), PrevButton(true)
+	{
+		Texture = Game->Texture[TEX_CURSOR_FILL];
+		X = x;
+		Y = y;
+
+		float *fx = FollowingCursorX, *fy = FollowingCursorY;
+		for (int i = 0; i<FOLLOWING_CURSOR_LENGTH; i++) {
+			fx[i] = x;
+			fy[i] = y;
+		}
+	}
+	//선두 커서의 이동 처리
+	virtual bool Move(const CInputState* is) {
+		//커서의 이동 속도
+		float speed = 0.1f;
+		//레버의 입력에 따라 커서의 그림좌표를 변화시킨다.
+		if (is->Left && X>0) X -= speed;
+		if (is->Right && X<MAX_X - 1) X += speed;
+		if (is->Up && Y>0) Y -= speed;
+		if (is->Down && Y<MAX_Y - 1) Y += speed;
+
+		//버튼을 입력한 경우의 처리
+		//선두 커서가 가리키는 구역과
+		//후미에 따라오는 커서가 가리키는 구역간에
+		//셀을 바꿔 넣는다.
+		float *fx = FollowingCursorX, *fy = FollowingCursorY;
+		if (!PrevButton && is->Button[0]) {
+			//커서가 가리키는 구역의 셀 좌표를 계산한다.
+			int
+				x = ((int)X / 5) * 5,
+				y = (((int)Y - 1) / 5) * 5 + 1,
+				tx = ((int)fx[FOLLOWING_CURSOR_LENGTH - 1] / 5) * 5,
+				ty = (((int)fy[FOLLOWING_CURSOR_LENGTH - 1] - 1) / 5) * 5 + 1;
+			//구역 내의 셀을 바꿔 넣는다.
+			for (int i = 1; i <= 4; i++) {
+				for (int j = 1; j <= 4; j++) {
+					Cell->Swap(x + i, y + j, tx + i, ty + j);
+				}
+			}
+		}
+		//버튼을 누른 채로 있을 때
+		//바꿔 넣기가 계속해서 반복되지 않도록 하기 위하여
+		//이전의 버튼 입력을 저장한다.
+		PrevButton = is->Button[0];
+
+
+		//커서의 좌표를 저장하기 위하여
+		//오래된 좌표를 배열의 뒤로 옮긴다.
+		//원형 deque를 이용하면 좋지 않을까싶음
+		for (int i = FOLLOWING_CURSOR_LENGTH - 1; i>0; i--) {
+			fx[i] = fx[i - 1];
+			fy[i] = fy[i - 1];
+		}
+		fx[0] = X;
+		fy[0] = Y;
+
+		return true;
+	}
+};
+
+// 추종 커서
+class CFollowingCursorTailCursor : public CMover {
+public:
+	CCell * Cell;
+	int Delay;
+
+	CFollowingCursorTailCursor(int delay, CTexture* texture)
+		: Delay(delay)
+	{
+		Texture = texture;
+		float *fx = FollowingCursorX, *fy = FollowingCursorY;
+		X = fx[delay];
+		Y = fy[delay];
+	}
+	//추종 커서의 이동처리
+	virtual bool Move(const CInputState* is) {
+		//선두 커서의 이전 좌표를 배열에서 읽어
+		//추종 커서의 좌표로 설정한다.
+		float *fx = FollowingCursorX, *fy = FollowingCursorY;
+		X = fx[Delay];
+		Y = fy[Delay];
+		return true;
+	}
+};
+
+// 스테이지
+class CFollowingCursorStage : public CStage {
+	CCell* Cell;
+public:
+	CFollowingCursorStage() : CStage(L"FOLLOWING CURSOR") {
+		Cell = new CCell();
+	}
+	virtual ~CFollowingCursorStage() {
+		delete Cell;
+	}
+	virtual void Init() {
+		Cell->Init((char*)
+			"                "
+			"################"
+			"#    #    #2222#"
+			"#0000#    #2222#"
+			"#0000#1111#2222#"
+			"#0000#1111#2222#"
+			"################"
+			"#    #    #    #"
+			"#    #3333#    #"
+			"#    #3333#    #"
+			"#    #3333#4444#"
+			"################"
+		);
+		float x = (MAX_X - 1)*0.5f, y = (MAX_Y - 1)*0.5f;
+		new CFollowingCursorHeadCursor(Cell, x, y);
+		for (int i = 10; i<FOLLOWING_CURSOR_LENGTH - 1; i += 10) {
+			new CFollowingCursorTailCursor(i, Game->Texture[TEX_CURSOR_LINE]);
+		}
+		new CFollowingCursorTailCursor(FOLLOWING_CURSOR_LENGTH - 1, Game->Texture[TEX_CURSOR_FILL]);
+	}
+	virtual void Draw() {
+		float
+			sw = Game->GetGraphics()->GetWidth() / MAX_X,
+			sh = Game->GetGraphics()->GetHeight() / MAX_Y;
+		for (int y = 0; y<MAX_Y; y++) {
+			for (int x = 0; x<MAX_X; x++) {
+				char c = Cell->Get(x, y);
+				if (c == '#') {
+					Game->Texture[TEX_FLOOR]->Draw(
+						x*sw, y*sh, sw, sh, 0, 0, 1, 1, COL_BLACK
+					);
+				}
+				else
+					if ('0' <= c && c <= '4') {
+						Game->Texture[TEX_BALL0 + (int)(c - '0')]->Draw(
+							x*sw, y*sh, sw, sh, 0, 0, 1, 1, COL_MGRAY
+						);
+					}
+			}
+		}
+	}
+};
