@@ -157,6 +157,7 @@
     <ClInclude Include="Mover.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Stage1.h" />
+    <ClInclude Include="Stage2.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LibGame\LibGame.vcxproj">

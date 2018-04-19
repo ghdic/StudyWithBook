@@ -135,22 +135,32 @@ public:
 		}
 	}
 	
-	//셀에서 x,y 위치와 x, y 간격만큼 벌어진 곳 둘다 공백이 아닌경우. for문은 왜?
+	//셀의 접촉판정 처리
+	//셀의 모임을 좌표에 배치했을 때
+	//공백이 아닌 셀끼리 겹쳐지는지를 검사한다.
+	//겹쳐지는 경우에는 true, 겹쳐지지 않는 경우에는 false를 반환한다.
 	bool Hit(int x, int y, CCell* cell) {
 		for (int i = 0, in = cell->GetYSize(); i < in; i++) {
 			for (int j = 0, jn = cell->GetXSize(); j < jn; j++) {
+				//공백이 아닌 셀끼리 한 개라도 겹치는 경우에는
+				//true를 반환한다.
 				if (cell->Get(j, i) != ' '&&Get(x + j, y + i) != ' ') {
 					return true;
 				}
 			}
 		}
+		//공백이 아닌 셀끼리 한 개도 겹치지 않는 경우에는
+		//false를 반환한다.
 		return false;
 	}
 
-	//애초에 x+j, y+i는 셀 범위 넘지않나??. 셀 범위 넘으면 공백주네..
+	//셀의 합성 처리
+	//셀의 묶음을 좌표에 합성한다.
+	//공백인 셀은 합성하지 않는다.
 	void Merge(int x, int y, CCell* cell) {
 		for (int i = 0, in = cell->GetYSize(); i < in; i++) {
 			for (int j = 0, jn = cell->GetXSize(); j < jn; j++) {
+				//공백이 아닌 셀만 합성한다.
 				if (cell->Get(j, i) != ' ') {
 					Set(x + j, y + i, cell->Get(j, i));
 				}
@@ -176,13 +186,89 @@ public:
 	}
 };
 
+//셀 (3D)
+class CCell3D {
+	char* Cell;
+	int XSize, YSize, ZSize;
+public:
+	CCell3D(int xsize, int ysize, int zsize)
+		: XSize(xsize), YSize(ysize), ZSize(zsize)
+	{
+		Cell = new char[XSize*YSize*ZSize];
+	}
+	~CCell3D() {
+		delete[] Cell;
+	}
+	char Get(int x, int y, int z) {
+		return Cell[x + (y + z * YSize)*XSize];
+	}
+	void Set(int x, int y, int z, char value) {
+		Cell[x + (y + z * YSize)*XSize] = value;
+	}
+	void Swap(int xa, int ya, int za, int xb, int yb, int zb) {
+		char c = Get(xa, ya, za);
+		char d = Get(xb, yb, zb);
+		Set(xa, ya, za, d);
+		Set(xb, yb, zb, c);
+	}
+	int GetXSize() {
+		return XSize;
+	}
+	int GetYSize() {
+		return YSize;
+	}
+	int GetZSize() {
+		return ZSize;
+	}
+	bool Hit(int x, int y, int z, CCell3D* cell) {
+		for (int i = 0, in = cell->GetZSize(); i<in; i++) {
+			for (int j = 0, jn = cell->GetYSize(); j<jn; j++) {
+				for (int k = 0, kn = cell->GetXSize(); k<kn; k++) {
+					if (cell->Get(k, j, i) != ' ' && Get(x + k, y + j, z + i) != ' ') {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	void Merge(int x, int y, int z, CCell3D* cell) {
+		for (int i = 0, in = cell->GetZSize(); i<in; i++) {
+			for (int j = 0, jn = cell->GetYSize(); j<jn; j++) {
+				for (int k = 0, kn = cell->GetXSize(); k<kn; k++) {
+					if (cell->Get(k, j, i) != ' ') {
+						Set(x + k, y + j, z + i, cell->Get(k, j, i));
+					}
+				}
+			}
+		}
+	}
+	void Set(int x, int y, int z, CCell3D* cell) {
+		for (int i = 0, in = cell->GetZSize(); i<in; i++) {
+			for (int j = 0, jn = cell->GetYSize(); j<jn; j++) {
+				for (int k = 0, kn = cell->GetXSize(); k<kn; k++) {
+					Set(x + k, y + j, z + i, cell->Get(k, j, i));
+				}
+			}
+		}
+	}
+	void Clear() {
+		for (int i = 0, in = GetZSize(); i<in; i++) {
+			for (int j = 0, jn = GetYSize(); j<jn; j++) {
+				for (int k = 0, kn = GetXSize(); k<kn; k++) {
+					Set(k, j, i, ' ');
+				}
+			}
+		}
+	}
+};
 
 //난수
 CRand Rand;
 
 #include "Stage.h"
 #include "Stage1.h"
-//#include "Stage2.h"
+#include "Stage2.h"
 //#include "Stage3.h"
 //#include "Stage4.h"
 //#include "Stage5.h"
@@ -197,16 +283,16 @@ void MakeStage() {
 	Game->Stage.push_back(new CMazeWalkerStage());
 	Game->Stage.push_back(new CLoadPusherStage());
 	Game->Stage.push_back(new CSlidingLoadPusherStage());
-	//Game->Stage.push_back(new CLoadPusherInGravityStage());
-	//Game->Stage.push_back(new CSelfDirectiveCharacterStage());
-	//Game->Stage.push_back(new CFollowingCursorStage());
+	Game->Stage.push_back(new CLoadPusherInGravityStage());
+	Game->Stage.push_back(new CSelfDirectiveCharacterStage());
+	Game->Stage.push_back(new CFollowingCursorStage());
 
-	//// Stage2 떨어뜨리기
-	//Game->Stage.push_back(new CDroppingBlockStage());
-	//Game->Stage.push_back(new CDroppingJewelStage());
-	//Game->Stage.push_back(new CDroppingBallStage());
-	//Game->Stage.push_back(new CDroppingBall2Stage());
-	//Game->Stage.push_back(new CDroppingBlock3DStage());
+	// Stage2 떨어뜨리기
+	Game->Stage.push_back(new CDroppingBlockStage());
+	Game->Stage.push_back(new CDroppingJewelStage());
+	Game->Stage.push_back(new CDroppingBallStage());
+	Game->Stage.push_back(new CDroppingBall2Stage());
+	Game->Stage.push_back(new CDroppingBlock3DStage());
 
 	//// Stage3 연결하기
 	//Game->Stage.push_back(new CConnectedRailStage());
