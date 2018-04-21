@@ -41,5 +41,8 @@
     <ClInclude Include="Stage2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Stage3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

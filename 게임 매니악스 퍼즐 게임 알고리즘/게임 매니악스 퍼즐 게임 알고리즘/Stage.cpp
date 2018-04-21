@@ -269,7 +269,7 @@ CRand Rand;
 #include "Stage.h"
 #include "Stage1.h"
 #include "Stage2.h"
-//#include "Stage3.h"
+#include "Stage3.h"
 //#include "Stage4.h"
 //#include "Stage5.h"
 //#include "Stage6.h"
@@ -294,13 +294,13 @@ void MakeStage() {
 	Game->Stage.push_back(new CDroppingBall2Stage());
 	Game->Stage.push_back(new CDroppingBlock3DStage());
 
-	//// Stage3 연결하기
-	//Game->Stage.push_back(new CConnectedRailStage());
-	//Game->Stage.push_back(new CConnectedPipeStage());
-	//Game->Stage.push_back(new CLinkedShapeStage());
-	//Game->Stage.push_back(new CEnclosedAreaStage());
-	//Game->Stage.push_back(new CTraversableRouteStage());
-	//Game->Stage.push_back(new CCrosswordStage());
+	// Stage3 연결하기
+	Game->Stage.push_back(new CConnectedRailStage());
+	Game->Stage.push_back(new CConnectedPipeStage());
+	Game->Stage.push_back(new CLinkedShapeStage());
+	Game->Stage.push_back(new CEnclosedAreaStage());
+	Game->Stage.push_back(new CTraversableRouteStage());
+	Game->Stage.push_back(new CCrosswordStage());
 
 	//// Stage4 블록
 	//Game->Stage.push_back(new CRectangleShapedBlockStage());
