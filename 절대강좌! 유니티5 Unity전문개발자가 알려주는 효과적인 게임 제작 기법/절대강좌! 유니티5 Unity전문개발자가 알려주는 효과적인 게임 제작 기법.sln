@@ -1,12 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "절대강좌! 유니티5 Unity전문개발자가 알려주는 효과적인 게임 제작 기법", "절대강좌! 유니티5 Unity전문개발자가 알려주는 효과적인 게임 제작 기법.csproj", "{9CEAB308-CF74-01AB-06E9-B2539EECA936}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CEAB308-CF74-01AB-06E9-B2539EECA936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CEAB308-CF74-01AB-06E9-B2539EECA936}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CEAB308-CF74-01AB-06E9-B2539EECA936}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CEAB308-CF74-01AB-06E9-B2539EECA936}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
