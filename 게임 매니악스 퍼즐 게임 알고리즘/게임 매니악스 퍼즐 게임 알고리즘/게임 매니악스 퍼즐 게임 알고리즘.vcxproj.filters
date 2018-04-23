@@ -44,5 +44,14 @@
     <ClInclude Include="Stage3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Stage4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage6.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

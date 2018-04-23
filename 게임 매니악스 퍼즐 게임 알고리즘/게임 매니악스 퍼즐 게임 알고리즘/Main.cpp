@@ -53,7 +53,7 @@ static const wchar_t* MESH_NAME[] = {
 
 // 생성자
 CPuzzleGame::CPuzzleGame()
-	: CGame(L"서적[게임 매니악스 : 퍼즐게임 알고리즘](마쯔우라 켄이치로/츠카사 유키 저) 예제 프로그램", true, false, true),
+	: CGame(L"[게임 매니악스 : 퍼즐게임 알고리즘] 예제 프로그램 퍼즐게임 만들어보기~", true, false, true),
 	Paused(false), PrevInput(false),
 	StageIndex(0), StageActive(false)
 {

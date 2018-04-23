@@ -270,9 +270,9 @@ CRand Rand;
 #include "Stage1.h"
 #include "Stage2.h"
 #include "Stage3.h"
-//#include "Stage4.h"
-//#include "Stage5.h"
-//#include "Stage6.h"
+#include "Stage4.h"
+#include "Stage5.h"
+#include "Stage6.h"
 
 //============================================
 //모든 스테이지의 작성
@@ -302,33 +302,33 @@ void MakeStage() {
 	Game->Stage.push_back(new CTraversableRouteStage());
 	Game->Stage.push_back(new CCrosswordStage());
 
-	//// Stage4 블록
-	//Game->Stage.push_back(new CRectangleShapedBlockStage());
-	//Game->Stage.push_back(new CTransformedBlockStage());
-	//Game->Stage.push_back(new CStruckBlockStage());
-	//Game->Stage.push_back(new CRotatedStageStage());
-	//Game->Stage.push_back(new CFoodBlockStage());
-	//Game->Stage.push_back(new CSurroundingBlockStage());
-	//Game->Stage.push_back(new CConnectedBlockStage());
-	//Game->Stage.push_back(new CDrawnAndShotBlockStage());
-	//Game->Stage.push_back(new CPushedAndCollectedBlockStage());
-	//Game->Stage.push_back(new CCaughtAndPiledBlockStage());
-	//Game->Stage.push_back(new CMarkedAndSunkBlockStage());
+	// Stage4 블록
+	Game->Stage.push_back(new CRectangleShapedBlockStage());
+	Game->Stage.push_back(new CTransformedBlockStage());
+	Game->Stage.push_back(new CStruckBlockStage());
+	Game->Stage.push_back(new CRotatedStageStage());
+	Game->Stage.push_back(new CFoodBlockStage());
+	Game->Stage.push_back(new CSurroundingBlockStage());
+	Game->Stage.push_back(new CConnectedBlockStage());
+	Game->Stage.push_back(new CDrawnAndShotBlockStage());
+	Game->Stage.push_back(new CPushedAndCollectedBlockStage());
+	Game->Stage.push_back(new CCaughtAndPiledBlockStage());
+	Game->Stage.push_back(new CMarkedAndSunkBlockStage());
 
-	//// Stage5 볼
-	//Game->Stage.push_back(new CBallOnRailStage());
-	//Game->Stage.push_back(new CHangingBallStage());
-	//Game->Stage.push_back(new CCollectedBallStage());
-	//Game->Stage.push_back(new CSwappedBallStage());
-	//Game->Stage.push_back(new CSnakeBallStage());
-	//Game->Stage.push_back(new CFlippedBallStage());
-	//Game->Stage.push_back(new CRollingBallStage());
+	// Stage5 볼
+	Game->Stage.push_back(new CBallOnRailStage());
+	Game->Stage.push_back(new CHangingBallStage());
+	Game->Stage.push_back(new CCollectedBallStage());
+	Game->Stage.push_back(new CSwappedBallStage());
+	Game->Stage.push_back(new CSnakeBallStage());
+	Game->Stage.push_back(new CFlippedBallStage());
+	Game->Stage.push_back(new CRollingBallStage());
 
-	//// Stage6 기타
-	//Game->Stage.push_back(new CMemorizingItemPositionStage());
-	//Game->Stage.push_back(new CTreasureMapStage());
-	//Game->Stage.push_back(new CDeliveringLoadStage());
-	//Game->Stage.push_back(new CMakingFloorStage());
-	//Game->Stage.push_back(new CDiceStage());
-	//Game->Stage.push_back(new CBuildingStage());
+	// Stage6 기타
+	Game->Stage.push_back(new CMemorizingItemPositionStage());
+	Game->Stage.push_back(new CTreasureMapStage());
+	Game->Stage.push_back(new CDeliveringLoadStage());
+	Game->Stage.push_back(new CMakingFloorStage());
+	Game->Stage.push_back(new CDiceStage());
+	Game->Stage.push_back(new CBuildingStage());
 }
