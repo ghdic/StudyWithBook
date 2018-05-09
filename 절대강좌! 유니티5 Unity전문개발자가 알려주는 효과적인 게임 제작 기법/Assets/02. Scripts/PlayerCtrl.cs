@@ -1,6 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//클래스에 System.Serializable이라는 Attribute를 명시해야
+//Inspector 뷰에 노출됨
+[System.Serializable]
+public class Anim
+{
+    public AnimationClip idle;
+    public AnimationClip runForward;
+    public AnimationClip runBackward;
+    public AnimationClip runRight;
+    public AnimationClip runLeft;
+}
+
 public class PlayerCtrl : MonoBehaviour
 {
     private float h = 0.0f;
@@ -11,6 +23,15 @@ public class PlayerCtrl : MonoBehaviour
     //이동 속도 변수(public 선언시 Inspector에 노출되 수정 가능해짐)
     public float moveSpeed = 10.0f;
 
+    //회전 속도 변수
+    public float rotSpeed = 100.0f;
+
+    //인스펙터뷰에 표시할 애니메이션 클래스 변수
+    public Anim anim;
+
+    //아래에 있는 3D 모델의 Animation 컴포넌트에 접근하기 위한 변수
+    public Animation _animation;
+
     private void Start()
     {
         //스크립트 처음에 Transform 컴포넌트 할당
@@ -20,6 +41,13 @@ public class PlayerCtrl : MonoBehaviour
         //tr = gameObject.GetComponent<Transform>();
         //tr = (Transform)GetComponent("Transform");
         //tr = (Transform)GetComponent(typeof(Transform));
+
+        //자신의 하위에 있는 Animation 컴포넌트를 찾아와 변수에 할당
+        _animation = GetComponentInChildren<Animation>();
+
+        //Animation 컴포넌트의 애니메이션 클립을 지정하고 실행
+        _animation.clip = anim.idle;
+        _animation.Play();
     }
 
     private void Update()
@@ -45,5 +73,37 @@ public class PlayerCtrl : MonoBehaviour
         //transform.position += new Vector3(0, 0, 1);
         //Translate라는 더 편한게 있음! 위 소스와 동일하게 동작
         //tr.Translate(Vector3.forward);
+
+        //vector3.up 축을 기준으로 rotSpeed만큼의 속도로 회전
+        //마우스 좌우로 하면 Rotate 함
+        tr.Rotate(Vector3.up * Time.deltaTime * rotSpeed * Input.GetAxis("Mouse X"));
+
+        //키보드 입력값을 기준으로 동작할 애니메이션 수행
+        //CrossFade 부드럽게 애니메이션을 바꿔준다. 0.3f는 페이드아웃 시간으로 0.3초내에 애니메이션이 변경된다.
+        if (v >= 0.1f)
+        {
+            //전진 애니메이션
+            _animation.CrossFade(anim.runForward.name, 0.3f);
+        }
+        else if (v <= -0.1f)
+        {
+            //후진 애니메이션
+            _animation.CrossFade(anim.runBackward.name, 0.3f);
+        }
+        else if (h >= 0.1f)
+        {
+            //오른쪽 이동 애니메이션
+            _animation.CrossFade(anim.runRight.name, 0.3f);
+        }
+        else if (h <= -0.1f)
+        {
+            //왼쪽 이동 애니메이션
+            _animation.CrossFade(anim.runLeft.name, 0.3f);
+        }
+        else
+        {
+            //정지시 idle 애니메이션
+            _animation.CrossFade(anim.idle.name, 0.3f);
+        }
     }
 }

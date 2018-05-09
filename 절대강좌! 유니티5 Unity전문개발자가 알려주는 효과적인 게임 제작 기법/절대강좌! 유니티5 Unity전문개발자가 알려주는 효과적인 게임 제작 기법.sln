@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "절대강좌! 유니티5 Unity전문개발자가 알려주는 효과적인 게임 제작 기법", "절대강좌! 유니티5 Unity전문개발자가 알려주는 효과적인 게임 제작 기법.csproj", "{9CEAB308-CF74-01AB-06E9-B2539EECA936}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "절대강좌! 유니티5 Unity전문개발자가 알려주는 효과적인 게임 제작 기법", "Assembly-CSharp.csproj", "{194341CD-E7A7-BC9C-5AA3-1B7E2514DADA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "절대강좌! 유니티5 Unity전문개발자가 알려주는 효과적인 게임 제작 기법", "Assembly-CSharp-firstpass.csproj", "{1388B04D-1D51-F49F-3A0E-F7C4CC554F15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "절대강좌! 유니티5 Unity전문개발자가 알려주는 효과적인 게임 제작 기법", "Assembly-CSharp-Editor-firstpass.csproj", "{91C0FAD2-FC83-295E-6C29-3DE85724885B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +13,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9CEAB308-CF74-01AB-06E9-B2539EECA936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9CEAB308-CF74-01AB-06E9-B2539EECA936}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9CEAB308-CF74-01AB-06E9-B2539EECA936}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9CEAB308-CF74-01AB-06E9-B2539EECA936}.Release|Any CPU.Build.0 = Release|Any CPU
+		{194341CD-E7A7-BC9C-5AA3-1B7E2514DADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{194341CD-E7A7-BC9C-5AA3-1B7E2514DADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{194341CD-E7A7-BC9C-5AA3-1B7E2514DADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{194341CD-E7A7-BC9C-5AA3-1B7E2514DADA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1388B04D-1D51-F49F-3A0E-F7C4CC554F15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1388B04D-1D51-F49F-3A0E-F7C4CC554F15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1388B04D-1D51-F49F-3A0E-F7C4CC554F15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1388B04D-1D51-F49F-3A0E-F7C4CC554F15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91C0FAD2-FC83-295E-6C29-3DE85724885B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91C0FAD2-FC83-295E-6C29-3DE85724885B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91C0FAD2-FC83-295E-6C29-3DE85724885B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91C0FAD2-FC83-295E-6C29-3DE85724885B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
