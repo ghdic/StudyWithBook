@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\02. Scripts\BarrelCtrl.cs" />
     <Compile Include="Assets\02. Scripts\BulletCtrl.cs" />
     <Compile Include="Assets\02. Scripts\FireCtrl.cs" />
     <Compile Include="Assets\02. Scripts\FollowCam.cs" />
