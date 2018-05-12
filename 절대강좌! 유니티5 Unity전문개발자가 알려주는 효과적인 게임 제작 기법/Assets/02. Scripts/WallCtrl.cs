@@ -16,7 +16,7 @@ public class WallCtrl : MonoBehaviour {
             //스파크 파티클을 동적으로 생성하고 변수에 할당
             GameObject spark = (GameObject)Instantiate(sparkEffect, collision.transform.position, Quaternion.identity);
             //ParticleSystem 컴포넌트 수행시간이 지난 후 삭제 처리
-            Destroy(spark, spark.GetComponent<ParticleSystem>().duration + 0.2f);
+            Destroy(spark, spark.GetComponent<ParticleSystem>().main.duration + 0.2f);
 
             //충돌한 게임오브젝트 삭제
             Destroy(collision.gameObject, 3.0f);
