@@ -19,10 +19,11 @@ public class FollowCam : MonoBehaviour {
         //카메라의 위치를 추적대상의 dist 변수만큼 뒤쪽으로 배치하고
         //height 변수만큼 위로 올림
         //Vector3.Lerp(Vector3 시작위치, Vector3 종료위치, float 시간)
-        tr.position = Vector3.Lerp(tr.position, targetTr.position
-            - (targetTr.forward * dist) + (Vector3.up * height),
-            Time.deltaTime * dampTrace);
+        //tr.position = Vector3.Lerp(tr.position, targetTr.position
+        //    - (targetTr.forward * dist) + (Vector3.up * height),
+        //    Time.deltaTime * dampTrace);
         //카메라가 타깃 게임오브젝트를 바라보게 설정
-        tr.LookAt(targetTr.position);
+        //tr.LookAt(targetTr.position.);
+        tr.position = new Vector3(targetTr.position.x, 1.5f, targetTr.position.z+0.5f);
 	}
 }

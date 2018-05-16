@@ -63,9 +63,12 @@
     <Compile Include="Assets\02. Scripts\BulletCtrl.cs" />
     <Compile Include="Assets\02. Scripts\FireCtrl.cs" />
     <Compile Include="Assets\02. Scripts\FollowCam.cs" />
+    <Compile Include="Assets\02. Scripts\GameMgr.cs" />
+    <Compile Include="Assets\02. Scripts\GameUI.cs" />
     <Compile Include="Assets\02. Scripts\MonsterCtrl.cs" />
     <Compile Include="Assets\02. Scripts\MyGizmo.cs" />
     <Compile Include="Assets\02. Scripts\PlayerCtrl.cs" />
+    <Compile Include="Assets\02. Scripts\UIMgr.cs" />
     <Compile Include="Assets\02. Scripts\WallCtrl.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/User/source/repos/StudyWithBook/절대강좌! 유니티5 Unity전문개발자가 알려주는 효과적인 게임 제작 기법/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>

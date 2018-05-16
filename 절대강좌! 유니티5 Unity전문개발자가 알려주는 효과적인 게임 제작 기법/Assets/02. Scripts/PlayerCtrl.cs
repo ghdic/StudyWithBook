@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 //클래스에 System.Serializable이라는 Attribute를 명시해야
 //Inspector 뷰에 노출됨
@@ -32,8 +33,21 @@ public class PlayerCtrl : MonoBehaviour
     //아래에 있는 3D 모델의 Animation 컴포넌트에 접근하기 위한 변수
     public Animation _animation;
 
+    //Player의 생명 변수
+    public int hp = 100;
+    //Player의 생명 초깃값
+    private int initHp;
+    //Player의 Health bar 이미지
+    public Image imgHpbar;
+    //델리게이트 및 이벤트 선언
+    public delegate void PlayerDieHanler();
+    public static event PlayerDieHanler OnPlayerDie;
+    //게임 매니저에 접근하기 위한 변수
+    private GameMgr gameMgr;
     private void Start()
     {
+        //생명 초깃값 설정
+        initHp = hp;
         //스크립트 처음에 Transform 컴포넌트 할당
         //Update 함수에서 접근해야 할 컴포넌트는 Awake, Start 함수에서 미리 변수에 할당한 후 Update 함수에서 사용
         tr = GetComponent<Transform>();
@@ -48,6 +62,8 @@ public class PlayerCtrl : MonoBehaviour
         //Animation 컴포넌트의 애니메이션 클립을 지정하고 실행
         _animation.clip = anim.idle;
         _animation.Play();
+        //GameMgr 스크립트 할당
+        //gameMgr = GameObject.Find("GameManager").GetComponent<GameMgr>();
     }
 
     private void Update()
@@ -57,8 +73,8 @@ public class PlayerCtrl : MonoBehaviour
         h = Input.GetAxis("Horizontal");//A, D, Left, Right를 눌렀을때 -1 ~+1 값을 반환한다.
         v = Input.GetAxis("Vertical");//W, D, Up, Down 을 눌렀을 때 -1 ~ +1 값을 반환한다.
         //Console View에 텍스트형식으로 output
-        Debug.Log("H=" + h.ToString());
-        Debug.Log("V=" + v.ToString());
+        //Debug.Log("H=" + h.ToString());
+        //Debug.Log("V=" + v.ToString());
 
         //전후좌우 이동 방향 벡터 계산
         Vector3 moveDir = (Vector3.forward * v) + (Vector3.right * h);
@@ -105,5 +121,49 @@ public class PlayerCtrl : MonoBehaviour
             //정지시 idle 애니메이션
             _animation.CrossFade(anim.idle.name, 0.3f);
         }
+    }
+
+    //충돌한 Collider의 IsTrigger 옵션이 체크됐을 때 발생
+    private void OnTriggerEnter(Collider coll)
+    {
+        if(coll.gameObject.tag == "WALL")
+        {
+            tr.position = this.transform.position;
+        }
+        
+        //충돌한 Collider가 몬스터의 PUNCH이면 Player의 HP 차감
+        if(coll.gameObject.tag == "PUNCH")
+        {
+            hp -= 10;
+            //Image UI 항목 fillAmount 속성을 조절해 생명 게이지 값 조절
+            imgHpbar.fillAmount = (float)hp / (float)initHp;
+
+            Debug.Log("Player HP = " + hp.ToString());
+
+            //Player의 생명이 0이하이면 사망 처리
+            if (hp <= 0)
+            {
+                PlayerDie();
+            }
+        }
+    }
+
+    void PlayerDie()
+    {
+        Debug.Log("Player Die !!");
+
+        ////MONSTER라는 Tag를 가진 모든 게임오브젝트를 찾아옴
+        //GameObject[] monsters = GameObject.FindGameObjectsWithTag("MONSTER");
+
+        ////모든 몬스터의 OnPlayerDie 함수를 순차적으로 호출
+        //foreach(GameObject monster in monsters)
+        //{
+        //    monster.SendMessage("OnPlayerDie", SendMessageOptions.DontRequireReceiver);
+        //}
+
+        //이벤트 발생시킴
+        OnPlayerDie();
+        //GameMgr의 싱글턴 인스턴스를 접근해 isGameOver 변숫값을 변경해 몬스텨 출현을 중지시킴
+        GameMgr.instance.isGameOver = true;
     }
 }
