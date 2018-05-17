@@ -18,6 +18,7 @@ public class PlayerCtrl : MonoBehaviour
 {
     private float h = 0.0f;
     private float v = 0.0f;
+    private float jump = 0.0f;
 
     //접근해야 하는 컴포넌트는 반드시 변수에 할당한 후 사용
     private Transform tr;
@@ -64,21 +65,29 @@ public class PlayerCtrl : MonoBehaviour
         _animation.Play();
         //GameMgr 스크립트 할당
         //gameMgr = GameObject.Find("GameManager").GetComponent<GameMgr>();
-    }
 
+
+        //마우스커서 숨기기, 커서 움직이지 않게함
+        Cursor.lockState = CursorLockMode.Locked;//마우스 커서 고정
+        Cursor.visible = false; //마우스 커서 보이기
+
+
+    }
+    
     private void Update()
     {
         //Editor -> Project Settings -> Input에 Name으로 되있는 값이 인자, 키입력값 받아들임
         //GetAxisRaw사용시 -1, 0, 1 꼴로 반환한다.
         h = Input.GetAxis("Horizontal");//A, D, Left, Right를 눌렀을때 -1 ~+1 값을 반환한다.
         v = Input.GetAxis("Vertical");//W, D, Up, Down 을 눌렀을 때 -1 ~ +1 값을 반환한다.
+        jump = Input.GetAxis("Jump");
         //Console View에 텍스트형식으로 output
         //Debug.Log("H=" + h.ToString());
         //Debug.Log("V=" + v.ToString());
 
         //전후좌우 이동 방향 벡터 계산
-        Vector3 moveDir = (Vector3.forward * v) + (Vector3.right * h);
-
+        Vector3 moveDir = (Vector3.forward * v) + (Vector3.right * h) + (Vector3.up * jump);
+        
         //Transloate(이동 방향 * 속도 * 변위값 * Time.deltaTime, 기준좌표)
         //Time.deltaTime를 곱하는것은 매 초마다 moveSpeed만큼 움직이게 해준다.(안할경우 매 프레임마다)
         //벡터의 방향 성분만 추출하기 위해 정규화 벡터로 변경하는 normalized 속성 이용
@@ -93,7 +102,7 @@ public class PlayerCtrl : MonoBehaviour
         //vector3.up 축을 기준으로 rotSpeed만큼의 속도로 회전
         //마우스 좌우로 하면 Rotate 함
         tr.Rotate(Vector3.up * Time.deltaTime * rotSpeed * Input.GetAxis("Mouse X"));
-
+        tr.Rotate(Vector3.left * Time.deltaTime * rotSpeed * Input.GetAxis("Mouse Y"));
         //키보드 입력값을 기준으로 동작할 애니메이션 수행
         //CrossFade 부드럽게 애니메이션을 바꿔준다. 0.3f는 페이드아웃 시간으로 0.3초내에 애니메이션이 변경된다.
         if (v >= 0.1f)

@@ -24,6 +24,8 @@ public class FireCtrl : MonoBehaviour {
     }
     private void Update()
     {
+        //Ray를 시각적으로 표시하기 위해 사용
+        Debug.DrawRay(firePos.position, firePos.forward * 10.0f, Color.green);
         //마우스 왼쪽 버튼을 클릭했을 때 Fire 함수 호출
         //GetMouseButton 마우스 버튼 클릭하고 있을때
         //GetMouseButton up down 마우스 버튼 누르거나 땔때
@@ -31,6 +33,35 @@ public class FireCtrl : MonoBehaviour {
         if (Input.GetMouseButtonDown(0))
         {
             Fire();
+
+            //Ray에 맞은 게임오브젝트의 정보를 받아올 변수
+            RaycastHit hit;
+
+            //Raycast 함수로 Ray를 발사해 맞은 게임오브젝트가 있을때 true를 반환
+            if (Physics.Raycast(firePos.position, firePos.forward, out hit, 10.0f))
+            {
+                //Ray에 맞은 게임오브젝트의 Tag값을 비교해 몬스터 여부 체크
+                if(hit.collider.tag == "MONSTER")
+                {
+                    //SenMessage를 이용해 전달한 인자를 배열에 담음
+                    object[] _params = new object[2];
+                    _params[0] = hit.point;//Ray에 맞은 정확한 위치값(Vector3)
+                    _params[1] = 20;    //몬스터에 입힐 데미지값;
+                    //몬스터에 데미지 입히는 함수 호출
+                    hit.collider.gameObject.SendMessage("OnDamage", _params, SendMessageOptions.DontRequireReceiver);
+                }
+
+                //Ray에 맞은 게임오브젝트의 Tag값을 비교해 Barrel인지 확인
+                if (hit.collider.tag == "BARREL")
+                {
+                    //SenMessage를 이용해 전달한 인자를 배열에 담음 입사각 계산!
+                    object[] _params = new object[2];
+                    _params[0] = firePos.position;
+                    _params[1] = hit.point;
+                    
+                    hit.collider.gameObject.SendMessage("OnDamage", _params, SendMessageOptions.DontRequireReceiver);
+                }
+            }
         }
     }
     void Fire()
@@ -38,7 +69,8 @@ public class FireCtrl : MonoBehaviour {
         //동적으로 총알을 생성하는 함수
         CreateBullet();
         //사운드 발생 함수 (오디오클립, 볼륨)
-        source.PlayOneShot(fireSfx, 0.9f);
+        //source.PlayOneShot(fireSfx, 0.9f);
+        GameMgr.instance.PlaySfx(firePos.position, fireSfx);
         //잠시 기다리는 루틴을 위해 코루틴 함수로 호출
         StartCoroutine(this.ShowMuzzleFlash());
     }

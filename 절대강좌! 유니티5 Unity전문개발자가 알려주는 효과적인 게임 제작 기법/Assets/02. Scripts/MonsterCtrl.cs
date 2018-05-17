@@ -34,7 +34,7 @@ public class MonsterCtrl : MonoBehaviour {
 
     //GameUI에 접근하기 위한 변수
     private GameUI gameUI;
-    private void Start()
+    private void Awake()
     {
         //몬스터의 Transform 할당
         monsterTr = this.gameObject.GetComponent<Transform>();
@@ -47,19 +47,23 @@ public class MonsterCtrl : MonoBehaviour {
         //추적 대상의 위치를 설정하면 바로 추적 시작
         //nvAgent.destination = playerTr.position;
 
-        //일정한 간격으로 몬스터의 행동 상태를 체크하는 코루틴 함수 실행
-        StartCoroutine(this.CheckMonsterState());
-
-        //몬스터의 상태에 따라 동작하는 루틴을 실행하는 코루틴 함수 실행
-        StartCoroutine(this.MonsterAction());
+        
         //GameUI 게임오브젝트의 GameUI 스크립트를 할당
         gameUI = GameObject.Find("GameUI").GetComponent<GameUI>();
     }
 
     //이벤트 발생 시 수행할 함수 연결
+    //Start -> Awake로 바꾼이유는 OnEnabledl Start보다 빠르게 호출되어 컴포넌트 연결전이라 참조 오류 생김
+    //OnEnable은 스크립트 또는 게임오브젝특 비활성화된 상태에서 다시 활성화 될때 마다 발생하는 콜백함수이다.
     private void OnEnable()
     {
         PlayerCtrl.OnPlayerDie += this.OnPlayerDie;
+        //일정한 간격으로 몬스터의 행동 상태를 체크하는 코루틴 함수 실행
+        StartCoroutine(this.CheckMonsterState());
+
+        //몬스터의 상태에 따라 동작하는 루틴을 실행하는 코루틴 함수 실행
+        StartCoroutine(this.MonsterAction());
+
     }
 
     //이벤트 발생시 연결된 함수 해제
@@ -174,8 +178,31 @@ public class MonsterCtrl : MonoBehaviour {
         }
         //GameUI의 스코어 누적과 스코어 표시 함수 호출
         gameUI.DispScore(50);
+
+        //몬스터 오브젝트 풀로 환원시키는 코루틴 함수 호출
+        StartCoroutine(this.PushObjectPool());
     }
 
+    IEnumerator PushObjectPool()
+    {
+        yield return new WaitForSeconds(3.0f);
+
+        //각종 변수 초기화
+        isDie = false;
+        hp = 100;
+        gameObject.tag = "MONSTER";
+        monsterState = MonsterState.idle;
+
+        //몬스터에 추가된 Collider을 다시 활성화
+        gameObject.GetComponentInChildren<CapsuleCollider>().enabled = true;
+
+        foreach(Collider coll in gameObject.GetComponentsInChildren<SphereCollider>())
+        {
+            coll.enabled = true;
+        }
+        //몬스터를 비활성화
+        gameObject.SetActive(false);
+    }
     void CreateBloodEffect(Vector3 pos)
     {
         //혈흔 효과 생성
@@ -205,5 +232,24 @@ public class MonsterCtrl : MonoBehaviour {
         //추적을 정지하고 애니메이션을 수행
         nvAgent.isStopped = true;
         animator.SetTrigger("IsPlayerDie");
+    }
+
+    //몬스터가 Ray에 맞았을 때 호출되는 함수
+    void OnDamage(object[] _params)
+    {
+        Debug.Log(string.Format("Hit ray {0} : {1}", _params[0], _params[1]));
+
+        //혈흔효과 함수 호출
+        CreateBloodEffect((Vector3)_params[0]);
+
+        //맞은 총알의 Damage를 추출해 몬스터 hp 차감
+        hp -= (int)_params[1];
+        if (hp <= 0)
+        {
+            MonsterDie();
+        }
+
+        //IsHit Trigger를 발생시키면 Any State에서 gohit으로 전이됨
+        animator.SetTrigger("IsHit");
     }
 }

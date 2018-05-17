@@ -8,6 +8,7 @@ TagManager:
   - PUNCH
   - WALL
   - MONSTER
+  - BARREL
   layers:
   - Default
   - TransparentFX

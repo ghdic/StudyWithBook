@@ -24,6 +24,6 @@ public class FollowCam : MonoBehaviour {
         //    Time.deltaTime * dampTrace);
         //카메라가 타깃 게임오브젝트를 바라보게 설정
         //tr.LookAt(targetTr.position.);
-        tr.position = new Vector3(targetTr.position.x, 1.5f, targetTr.position.z+0.5f);
+        tr.position = new Vector3(targetTr.position.x, targetTr.position.y+1.5f, targetTr.position.z+0.5f);
 	}
 }
