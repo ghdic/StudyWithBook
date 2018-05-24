@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShooterNet", "Assembly-CSharp.csproj", "{2B1791A1-9B4B-4100-A392-0A76D1EA1E33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShooterNet", "Assembly-CSharp-firstpass.csproj", "{FA242060-14B9-A6C6-4B54-8B42A7154A6F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2B1791A1-9B4B-4100-A392-0A76D1EA1E33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B1791A1-9B4B-4100-A392-0A76D1EA1E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B1791A1-9B4B-4100-A392-0A76D1EA1E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B1791A1-9B4B-4100-A392-0A76D1EA1E33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA242060-14B9-A6C6-4B54-8B42A7154A6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA242060-14B9-A6C6-4B54-8B42A7154A6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA242060-14B9-A6C6-4B54-8B42A7154A6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA242060-14B9-A6C6-4B54-8B42A7154A6F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

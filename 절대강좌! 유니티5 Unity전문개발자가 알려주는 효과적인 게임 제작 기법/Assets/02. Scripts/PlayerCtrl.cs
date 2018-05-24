@@ -76,6 +76,7 @@ public class PlayerCtrl : MonoBehaviour
     
     private void Update()
     {
+        
         //Editor -> Project Settings -> Input에 Name으로 되있는 값이 인자, 키입력값 받아들임
         //GetAxisRaw사용시 -1, 0, 1 꼴로 반환한다.
         h = Input.GetAxis("Horizontal");//A, D, Left, Right를 눌렀을때 -1 ~+1 값을 반환한다.
@@ -99,6 +100,9 @@ public class PlayerCtrl : MonoBehaviour
         //Translate라는 더 편한게 있음! 위 소스와 동일하게 동작
         //tr.Translate(Vector3.forward);
 
+        /* 점프 관련해서 땅밟고 점프 번수 제한, 아래볼땐 점프 안되는거 고치기 Translate,Mathf.Clamp 잘활용하면 될거같음..*/
+        //y좌표 범위 제한
+        tr.position = new Vector3(tr.position.x,Mathf.Clamp(tr.position.y, 0.0f, 10.0f), tr.position.z);
         //vector3.up 축을 기준으로 rotSpeed만큼의 속도로 회전
         //마우스 좌우로 하면 Rotate 함
         tr.Rotate(Vector3.up * Time.deltaTime * rotSpeed * Input.GetAxis("Mouse X"));
